@@ -6,9 +6,21 @@
         xmlns:local="clr-namespace:pract7"
         mc:Ignorable="d"
         Title="DataBinding" Height="485" Width="630">
-    <DockPanel  LastChildFill="False">
+
+    <DockPanel LastChildFill="False">
         <StackPanel DockPanel.Dock="Bottom">
-            <StatusBar Height="25" Width="auto" Margin="10 5 10 5" Background="LightGray" Padding="5 0 0 0">Готово</StatusBar>
+            <StatusBar Height="30" Width="auto" Margin="10 5 10 5" Background="LightGray" Padding="5 0 0 0">
+                <StackPanel Orientation="Horizontal">
+                    <StackPanel Orientation="Horizontal">
+                        <Label FontSize="10">Кол-во врачей:</Label>
+                        <Label Padding="10 3 10 0" Content="{Binding VrachCount}"></Label>
+                    </StackPanel>
+                    <StackPanel Margin="50 0 0 0" Orientation="Horizontal">
+                        <Label FontSize="10">Кол-во пациентов:</Label>
+                        <Label Padding="10 3 10 0" Content="{Binding PacientCount}"></Label>
+                    </StackPanel>
+                </StackPanel>
+            </StatusBar>
         </StackPanel>
         <Grid>
             <Grid.ColumnDefinitions>
@@ -52,22 +64,25 @@
                 </StackPanel>
                 <Button Height="20" Margin="40 5 40 0" Click="Button_Click">Регистрация</Button>
             </StackPanel>
-            <StackPanel Grid.Row="1" Grid.Column="0" Margin="0 5 0 0">
+            <StackPanel Grid.Row="1" Grid.Column="0" Margin="0 15 0 0">
                 <StackPanel Orientation="Horizontal">
                     <Label Width="80">ID врача</Label>
-                    <TextBox x:Name="id_vrach" Width="100" Height="20" Margin="5 0 5 0"></TextBox>
+                    <ComboBox x:Name="id_vrach" Width="100" Height="20" Margin="5 0 5 0"
+                              ItemsSource="{Binding VrachFiles}"
+                              SelectedItem="{Binding SelectedVrachFile, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                    </ComboBox>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <Label Width="80">Пароль</Label>
-                    <TextBox x:Name="Pas_vhod" Width="100" Height="20" Margin="5 0 5 0"></TextBox>
+                    <TextBox x:Name="Pas_vhod" Width="100" Height="20" Margin="5 0 5 0"
+                             Text="{Binding VrachPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
                 </StackPanel>
-                <Button Height="20" Margin="40 5 40 0" Click="Button_Click_1">Вход</Button>
             </StackPanel>
             <StackPanel Grid.Row="2" Grid.Column="0">
                 <Label>Фио:</Label>
-                <Label Height="25" FontSize="10"></Label>
+                <Label Height="25" FontSize="10" Content="{Binding FioText}"></Label>
                 <Label Margin="0 5 0 0">Специализация:</Label>
-                <Label Height="25" FontSize="10"></Label>
+                <Label Height="25" FontSize="10" Content="{Binding SpecText}"></Label>
             </StackPanel>
         </Grid>
         <Grid>
@@ -80,27 +95,35 @@
             </Grid.RowDefinitions>
             <StackPanel Grid.Row="0" Grid.Column="1">
                 <StackPanel Orientation="Horizontal">
-                    <Label Width="80">Поиск по ID:</Label>
-                    <TextBox Width="150" Margin="0 4 5 2"></TextBox>
+                    <Label Width="80">ID Пациента:</Label>
+                    <ComboBox x:Name="id_pacient" Width="150" Margin="0 4 5 2"
+                              ItemsSource="{Binding PacientFiles}"
+                              SelectedItem="{Binding SelectedPacientFile, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></ComboBox>
                 </StackPanel>
             </StackPanel>
             <StackPanel Grid.Row="2" Grid.Column="0">
                 <Label>Фио:</Label>
-                <Label Height="25" FontSize="10" Margin="5 0 5 0"></Label>
+                <Label Height="25" FontSize="10" Margin="5 0 5 0" 
+                       Content="{Binding CurrentPacient.LastName}"></Label>
                 <Label Margin="0 5 0 0">Дата рождения:</Label>
-                <Label Height="25" FontSize="10" Margin="5 0 5 0"></Label>
+                <Label Height="25" FontSize="10" Margin="5 0 5 0" 
+                       Content="{Binding CurrentPacient.Birthday}"></Label>
                 <StackPanel Orientation="Horizontal">
                     <Label Width="115">Последний прием:</Label>
-                    <DatePicker Width="115" Margin="0 2 5 2"></DatePicker>
+                    <DatePicker x:Name="lastAppointment" Width="115" Margin="0 2 5 2" 
+                                SelectedDate="{Binding CurrentPacient.LastAppointment, Mode=TwoWay}"></DatePicker>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <Label Width="80">Диагноз:</Label>
-                    <TextBox Width="150" Margin="0 4 5 2"></TextBox>
+                    <TextBox Width="150" Margin="0 4 5 2" 
+                             Text="{Binding CurrentPacient.Diagnosis, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
                 </StackPanel>
                 <StackPanel Orientation="Vertical">
                     <Label>Рекомендации:</Label>
-                    <TextBox Width="auto" Margin="5 0 5 2" Padding="0 0 0 30"></TextBox>
+                    <TextBox Width="auto" Margin="5 0 5 2" Padding="0 0 0 30"
+                             Text="{Binding CurrentPacient.Recomendations, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
                 </StackPanel>
+                <Button Height="20" Margin="30 5 30 0" Click="Button_Click_3">Сохранить</Button>
             </StackPanel>
         </Grid>
         <Grid>
@@ -126,28 +149,33 @@
                 </StackPanel>
                 <StackPanel Orientation="Vertical">
                     <Label>Дата рождения:</Label>
-                    <DatePicker x:Name="date_pac" Width="100" Margin="5 2 0 3"></DatePicker>
+                    <DatePicker x:Name="date_pac" Width="100" Margin="5 2 0 3" DisplayDateStart="2025-01-01" DisplayDateEnd="2026-01-01"></DatePicker>
                 </StackPanel>
                 <Button Height="20" Margin="20 5 20 0" Click="Button_Click_2">Регистрация пациента</Button>
             </StackPanel>
             <StackPanel Grid.Row="1" Grid.Column="0">
                 <StackPanel Orientation="Horizontal">
                     <Label Width="80">Фамилия:</Label>
-                    <TextBox Width="100" Height="20" Margin="5 2 5 0"></TextBox>
+                    <TextBox Width="100" Height="20" Margin="5 2 5 0"
+                             Text="{Binding CurrentPacient.LastName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <Label Width="80">Имя:</Label>
-                    <TextBox Width="100" Height="20" Margin="5 2 5 0"></TextBox>
+                    <TextBox Width="100" Height="20" Margin="5 2 5 0"
+                             Text="{Binding CurrentPacient.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <Label Width="80">Отчество:</Label>
-                    <TextBox Width="100" Height="20" Margin="5 2 5 0"></TextBox>
+                    <TextBox Width="100" Height="20" Margin="5 2 5 0"
+                             Text="{Binding CurrentPacient.MiddleName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
                 </StackPanel>
                 <StackPanel Orientation="Vertical">
                     <Label>Дата рождения:</Label>
-                    <DatePicker Width="100" Margin="5 2 0 3"></DatePicker>
+                    <TextBox Width="100" Margin="5 2 0 3"
+                             Text="{Binding CurrentPacient.Birthday, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
                 </StackPanel>
-                <Button Height="20" Margin="20 5 20 0">Изменение пациента</Button>
+                <Button Height="20" Margin="20 5 20 0" Click="ChangePatient_Click">Изменение пациента</Button>
+                <Button Height="20" Margin="20 5 20 0" Click="Reset_Click">Сбросить</Button>
             </StackPanel>
         </Grid>
     </DockPanel>
