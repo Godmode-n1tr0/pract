@@ -96,4 +96,66 @@ namespace pract7
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
     }
+}        public string Lastname
+        {
+            get => _lastname;
+            set
+            {
+                if (_lastname != value)
+                {
+                    _lastname = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private string _middleName;
+        public string MiddleName
+        {
+            get => _middleName;
+            set
+            {
+                if (_middleName != value)
+                {
+                    _middleName = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private string _specialisation;
+        public string Specialisation
+        {
+            get => _specialisation;
+            set
+            {
+                if (_specialisation != value)
+                {
+                    _specialisation = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private string _password;
+        public string Password
+        {
+            get => _password;
+            set
+            {
+                if (_password != value)
+                {
+                    _password = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected void OnPropertyChanged([CallerMemberName] string name = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+    }
 }
